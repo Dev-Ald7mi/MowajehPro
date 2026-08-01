@@ -1,0 +1,1301 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<script>try{ if(localStorage.getItem('theme')==='dark') document.documentElement.dataset.theme='dark'; }catch(e){}</script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, viewport-fit=cover">
+<title>MowajehPro</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;900&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#f4f5f8; --bg-elev:#ffffff; --bg-elev-2:#ffffff; --bg-elev-3:#f3f4f8;
+    --line:#e7e9ef; --line-soft:#eef0f4;
+    --text:#151824; --text-dim:#5c6474; --text-faint:#98a0b0;
+    --brand:#2454e0; --brand-dark:#1c3fb8; --brand-tint:rgba(36,84,224,.09);
+    --g4:#0ea472; --g4-glow:rgba(14,164,114,.12);
+    --g5:#2454e0; --g5-glow:rgba(36,84,224,.12);
+    --amber:#c8790a; --amber-glow:rgba(200,121,10,.12);
+    --red:#dc2626; --ok:#16a34a;
+    --acc-orange:var(--brand); --acc-indigo:var(--brand); --acc-teal:var(--brand);
+    --acc-blue:var(--brand); --acc-green:var(--brand); --acc-red:#dc2626; --acc-slate:var(--brand);
+    --radius:16px;
+  }
+  html[data-theme="dark"]{
+    --bg:#0c0f16; --bg-elev:#151924; --bg-elev-2:#151924; --bg-elev-3:#1b202c;
+    --line:#262c3a; --line-soft:#1e2330;
+    --text:#eef1f6; --text-dim:#9aa3b5; --text-faint:#5c6474;
+    --brand:#5b86ff; --brand-dark:#3a63e0; --brand-tint:rgba(91,134,255,.14);
+    --g4:#34d399; --g4-glow:rgba(52,211,153,.18);
+    --g5:#5b86ff; --g5-glow:rgba(91,134,255,.18);
+    --amber:#f5b942; --amber-glow:rgba(245,185,66,.16);
+    --red:#f2545b; --ok:#4ade80;
+  }
+  html[data-theme="dark"] body::before{
+    background:radial-gradient(700px 340px at 50% -10%, rgba(91,134,255,.08), transparent 60%);
+  }
+  *{box-sizing:border-box; -webkit-tap-highlight-color:transparent;}
+  html,body{margin:0; background:var(--bg); color:var(--text); font-family:'Tajawal',system-ui,sans-serif;}
+  body{padding-bottom:104px; min-height:100vh; overflow-x:hidden;}
+  .mono{font-family:'JetBrains Mono',monospace;}
+  ::selection{background:var(--g5-glow);}
+  body::before{content:''; position:fixed; inset:0; z-index:0; pointer-events:none;
+    background:radial-gradient(700px 340px at 50% -10%, rgba(36,84,224,.05), transparent 60%);}
+
+  header{padding:22px 18px 18px; display:flex; align-items:center; justify-content:space-between;
+    position:sticky; top:0; z-index:40;
+    background:linear-gradient(135deg, var(--brand), var(--brand-dark));}
+  header h1{font-size:18px; font-weight:800; margin:0; color:#fff; letter-spacing:.1px;}
+  header .sub{font-size:10.5px; color:rgba(255,255,255,.65); margin-top:2px;}
+  .status-pill{display:flex; align-items:center; gap:7px; font-size:11px; font-weight:700; color:#fff;
+    background:rgba(255,255,255,.14); border:1px solid rgba(255,255,255,.22); padding:7px 13px; border-radius:99px;}
+  .dot{width:7px; height:7px; border-radius:50%; background:rgba(255,255,255,.5);}
+  .dot.on{background:#3ee89b; box-shadow:0 0 8px rgba(62,232,155,.6); animation:pulse 2s infinite;}
+  .dot.on5{background:#7fa8ff; box-shadow:0 0 8px rgba(127,168,255,.6);}
+  @keyframes pulse{0%,100%{opacity:1} 50%{opacity:.4}}
+
+  main{max-width:520px; margin:0 auto; padding:16px 16px 0; position:relative; z-index:1;}
+  .view{display:none;} .view.active{display:block;}
+
+  .card{background:var(--bg-elev); border:1px solid var(--line); border-radius:var(--radius); padding:18px 18px 19px;
+    margin-bottom:14px; position:relative;
+    box-shadow:0 2px 10px -4px rgba(20,25,40,.06);}
+  .card h2{font-size:14.5px; font-weight:800; color:var(--text); margin:0 0 14px;
+    display:flex; align-items:center; gap:11px;}
+  .icon-badge{width:34px; height:34px; border-radius:11px; display:flex; align-items:center; justify-content:center;
+    background:var(--brand-tint); color:var(--brand); flex-shrink:0;}
+  .icon-badge svg{width:17px; height:17px;}
+  .card.acc-red .icon-badge{background:rgba(220,38,38,.09); color:var(--red);}
+  .hint{font-size:11.5px; color:var(--text-faint); line-height:1.7;}
+
+  /* refresh pills (antenna) */
+  .refresh-row{display:flex; align-items:center; justify-content:space-between; gap:10px; margin-bottom:2px;}
+  .refresh-label b{display:block; font-size:14.5px; font-weight:700;}
+  .refresh-label span{font-size:11px; color:var(--text-faint);}
+  .pills{display:flex; gap:7px;}
+  .pill{width:34px; height:34px; border-radius:10px; border:1px solid var(--line); background:var(--bg-elev-3);
+    color:var(--text-dim); font-weight:700; font-size:13px; display:flex; align-items:center; justify-content:center;
+    cursor:pointer; transition:.15s;}
+  .pill.active{background:var(--g5); border-color:var(--g5); color:#fff; box-shadow:0 0 0 4px var(--g5-glow);}
+
+  /* signal rows */
+  .sig-grid{display:grid; grid-template-columns:64px repeat(4,1fr); gap:7px; margin-bottom:9px;}
+  .sig-tag{border-radius:14px; border:1px solid var(--line); background:var(--bg-elev-3);
+    display:flex; flex-direction:column; align-items:center; justify-content:center; gap:5px; padding:9px 3px;}
+  .sig-tag b{font-size:14px; font-weight:900;}
+  .bars{display:flex; align-items:flex-end; gap:2px; height:14px;}
+  .bars i{width:4px; background:var(--text-faint); border-radius:1px; display:block;}
+  .bars i:nth-child(1){height:30%} .bars i:nth-child(2){height:50%}
+  .bars i:nth-child(3){height:70%} .bars i:nth-child(4){height:100%}
+  .sig-tag.g4 b{color:var(--g4)} .sig-tag.g4 .bars i.on{background:var(--g4)}
+  .sig-tag.g5 b{color:var(--g5)} .sig-tag.g5 .bars i.on{background:var(--g5)}
+  .gauge{border-radius:14px; border:1px solid var(--line); background:var(--bg-elev-3);
+    display:flex; flex-direction:column; align-items:center; justify-content:center; padding:7px 2px;}
+  .ring{width:48px; height:48px; border-radius:50%; display:flex; align-items:center; justify-content:center;
+    position:relative; margin-bottom:3px;}
+  .ring .val{font-size:10px; font-weight:700;}
+  .glabel{font-size:9px; color:var(--text-faint); font-weight:700; letter-spacing:.3px;}
+
+  .badge{display:inline-flex; align-items:center; gap:6px; padding:5px 14px; border-radius:99px;
+    font-size:13px; font-weight:800; margin-bottom:12px;}
+  .badge.g4{color:var(--g4); background:var(--g4-glow); border:1px solid rgba(52,211,153,.4);}
+  .badge.g5{color:var(--g5); background:var(--g5-glow); border:1px solid rgba(59,130,246,.4);}
+
+  .info-grid{display:grid; grid-template-columns:1fr 1fr 1fr; gap:8px;}
+  .info-box{border-radius:12px; border:1px solid var(--line-soft); background:var(--bg-elev-3);
+    padding:10px 8px; text-align:center;}
+  .info-box.hl-g4{border-color:rgba(52,211,153,.4);} .info-box.hl-g5{border-color:rgba(59,130,246,.4);}
+  .info-box .k{font-size:10px; color:var(--text-dim); font-weight:700; margin-bottom:5px;}
+  .info-box .v{font-size:13.5px; font-weight:800;}
+
+  /* CA visualizer */
+  .ca-wrap{position:relative; height:220px; display:flex; align-items:center; justify-content:center;}
+  .ca-center{position:absolute; width:60px; height:60px; border-radius:50%; background:var(--bg-elev-3);
+    border:1.5px solid var(--amber); display:flex; align-items:center; justify-content:center; z-index:5;
+    box-shadow:0 0 20px var(--amber-glow);}
+  .ca-center svg{width:26px;height:26px;}
+  .ca-node{position:absolute; min-width:56px; padding:5px 8px; border-radius:11px; text-align:center;
+    font-size:10.5px; font-weight:800; border:1.5px solid; cursor:pointer; transition:.15s; background:var(--bg-elev-2);}
+  .ca-node .cc{font-size:8.5px; font-weight:700; opacity:.7; display:block;}
+  .ca-node.off{opacity:.25; filter:grayscale(1);}
+  .ca-line{position:absolute; height:1.5px; background:linear-gradient(90deg, var(--amber), transparent);
+    transform-origin:0 50%; z-index:1; opacity:.5;}
+  .ca-meta{text-align:center; margin-top:6px;}
+  .ca-meta .tot{font-size:19px; font-weight:900; color:var(--amber);}
+  .ca-meta .lbl{font-size:10.5px; color:var(--text-dim);}
+
+  /* chips */
+  .chip-grid{display:flex; flex-wrap:wrap; gap:8px; margin-bottom:14px;}
+  .chip{padding:8px 14px; border-radius:10px; border:1px solid var(--line); background:var(--bg-elev-3);
+    font-size:12.5px; font-weight:700; color:var(--text-dim); cursor:pointer; transition:.15s;
+    font-family:'JetBrains Mono',monospace;}
+  .chip.sel{color:#fff; border-color:var(--amber); background:rgba(245,185,66,.14); box-shadow:0 0 0 3px var(--amber-glow);}
+  .chip small{display:block; font-size:9px; font-weight:500; color:var(--text-faint); font-family:'Tajawal',sans-serif;}
+  .chip.sel small{color:var(--amber);}
+  .vchip{padding:9px 15px; border-radius:11px; border:1px solid var(--line); background:var(--bg-elev-3);
+    font-size:13px; font-weight:700; color:var(--text-dim); cursor:pointer; transition:.15s;}
+  .vchip.sel{color:#04211d; border-color:var(--g4); background:var(--g4); box-shadow:0 0 0 3px var(--g4-glow);}
+
+  /* buttons */
+  .btn{border:none; border-radius:14px; font-weight:800; font-size:13.5px; cursor:pointer;
+    font-family:'Tajawal',sans-serif; padding:13px 16px; transition:.12s; display:flex; align-items:center;
+    justify-content:center; gap:8px;}
+  .btn:active{transform:scale(.97);}
+  .btn-primary{background:linear-gradient(160deg,#4a74ea,var(--brand)); color:#fff;
+    box-shadow:0 10px 22px -12px rgba(36,84,224,.5), inset 0 1px 0 rgba(255,255,255,.2);}
+  .btn-blue{background:linear-gradient(160deg,#4a74ea,var(--brand)); color:#fff;
+    box-shadow:0 10px 22px -12px rgba(36,84,224,.5), inset 0 1px 0 rgba(255,255,255,.2);}
+  .btn-ghost{background:var(--bg-elev-3); color:var(--text-dim); border:1px solid var(--line);}
+  .btn-danger{background:linear-gradient(160deg,#ff6b71,var(--red)); color:#2a0507;
+    box-shadow:0 10px 22px -10px rgba(242,84,91,.4);}
+  .btn-row{display:flex; gap:10px;} .btn-row .btn{flex:1;}
+  .btn:disabled{opacity:.45; cursor:not-allowed;}
+
+  /* speed dial */
+  .speed-stage{display:flex; align-items:center; justify-content:center; padding:10px 0 4px;}
+  .dial{position:relative; width:160px; height:160px;}
+  .dial svg{width:100%; height:100%; transform:rotate(-90deg);}
+  .dial .track{fill:none; stroke:var(--bg-elev-3); stroke-width:9;}
+  .dial .prog{fill:none; stroke:url(#speedGrad); stroke-width:9; stroke-linecap:round; transition:stroke-dashoffset .3s ease;}
+  .dial-center{position:absolute; inset:0; display:flex; flex-direction:column; align-items:center; justify-content:center;}
+  .dial-center .num{font-size:28px; font-weight:700; letter-spacing:-.5px;}
+  .dial-center .unit{font-size:10.5px; color:var(--text-faint); margin-top:1px;}
+  .dial-center .lbl{font-size:10px; color:var(--brand); font-weight:700; margin-top:5px; letter-spacing:.4px;}
+  .speed-grid{display:grid; grid-template-columns:1fr 1fr 1fr; gap:8px; margin-top:12px;}
+  .speed-box{background:var(--bg-elev-3); border:1px solid var(--line-soft); border-radius:12px; padding:10px 6px; text-align:center;}
+  .speed-box .k{font-size:9.5px; color:var(--text-faint); font-weight:700; margin-bottom:4px;}
+  .speed-box .v{font-size:14px; font-weight:800;}
+
+  /* dns */
+  .dns-input-row{display:flex; gap:8px; margin-bottom:12px;}
+  .dns-input,.conn-input{flex:1; background:var(--bg-elev-3); border:1px solid var(--line); color:var(--text);
+    border-radius:12px; padding:11px 14px; font-size:13px; font-family:'JetBrains Mono',monospace;
+    direction:ltr; text-align:left; width:100%;}
+  .conn-input{text-align:right; margin-bottom:8px;}
+  .dns-input:focus,.conn-input:focus{outline:none; border-color:var(--g5);}
+  .conn-input::placeholder{font-family:'Tajawal',sans-serif; color:var(--text-faint);}
+  .resolver-row{display:flex; align-items:center; justify-content:space-between; gap:10px;
+    background:var(--bg-elev-3); border:1px solid var(--line-soft); border-radius:12px; padding:11px 13px; margin-bottom:8px;}
+  .resolver-row .rname{font-size:12.5px; font-weight:700;}
+  .resolver-row .rip{font-size:10.5px; color:var(--text-faint); font-family:'JetBrains Mono',monospace;}
+  .resolver-row .rtime{font-size:13.5px; font-weight:800; font-family:'JetBrains Mono',monospace;}
+  .rtime.good{color:var(--ok)} .rtime.mid{color:var(--amber)} .rtime.bad{color:var(--red)}
+
+  .field-label{font-size:11.5px; color:var(--text-dim); font-weight:700; margin:0 0 6px;}
+  .toggle-row{display:flex; align-items:center; justify-content:space-between;
+    background:var(--bg-elev-3); border:1px solid var(--line-soft); border-radius:12px; padding:12px 14px; margin-bottom:10px;}
+  .toggle-row .t{font-size:13px; font-weight:700;} .toggle-row .s{font-size:10.5px; color:var(--text-faint);}
+  .tgl{width:44px; height:25px; border-radius:99px; background:var(--bg-elev); border:1px solid var(--line);
+    position:relative; cursor:pointer; flex-shrink:0;}
+  .tgl .k{position:absolute; top:2px; left:2px; width:19px; height:19px; border-radius:50%; background:var(--text-faint); transition:.2s;}
+  .tgl.on{background:var(--g4-glow); border-color:var(--g4);} .tgl.on .k{left:21px; background:var(--g4); box-shadow:0 0 8px var(--g4-glow);}
+
+  .swatch{width:38px; height:38px; border-radius:50%; cursor:pointer; border:3px solid transparent; transition:.15s;
+    box-shadow:inset 0 0 0 1.5px rgba(255,255,255,.35);}
+  .swatch.sel{border-color:var(--text); transform:scale(1.08);}
+
+  .device-row{display:flex; align-items:center; justify-content:space-between; gap:10px;
+    background:var(--bg-elev-3); border:1px solid var(--line-soft); border-radius:12px; padding:11px 13px; margin-bottom:8px;}
+  .device-row .dn{font-size:12.5px; font-weight:700;} .device-row .dm{font-size:10px; color:var(--text-faint); font-family:'JetBrains Mono',monospace;}
+  .device-row .blk{background:rgba(242,84,91,.14); color:var(--red); border:1px solid rgba(242,84,91,.3);
+    border-radius:9px; padding:6px 11px; font-size:11px; font-weight:700; cursor:pointer;}
+
+  .empty{display:flex; flex-direction:column; align-items:center; justify-content:center; padding:22px 10px; text-align:center; gap:7px;}
+  .empty .t{font-size:12.5px; color:var(--text-dim); font-weight:700;}
+  .empty .s{font-size:11px; color:var(--text-faint); max-width:260px;}
+
+  .conn-status{font-size:11.5px; color:var(--text-faint); margin-top:10px; line-height:1.6;}
+  .conn-status.ok{color:var(--ok);} .conn-status.bad{color:var(--red);}
+
+  nav{position:fixed; bottom:0; left:0; right:0; z-index:50; background:rgba(255,255,255,.97); backdrop-filter:blur(16px);
+    border-top:1px solid var(--line-soft); display:flex; align-items:center; justify-content:space-around;
+    padding:9px 6px calc(9px + env(safe-area-inset-bottom));}
+  html[data-theme="dark"] nav{background:rgba(12,15,22,.94);}
+  nav button{background:none; border:none; color:var(--text-faint); display:flex; flex-direction:column; align-items:center;
+    gap:3px; cursor:pointer; font-family:'Tajawal',sans-serif; font-size:9.5px; font-weight:700; padding:6px 16px;
+    border-radius:12px; transition:.15s;}
+  nav button svg{width:20px; height:20px;}
+  nav button.active{color:var(--brand); background:var(--brand-tint);}
+
+  footer{text-align:center; padding:22px 16px 8px; position:relative; z-index:1;}
+  footer .credit{font-size:9.5px; color:var(--text-faint);}
+  footer .credit b{color:var(--text-faint); font-weight:700;}
+
+  #toast{position:fixed; bottom:100px; left:50%; transform:translateX(-50%) translateY(16px); opacity:0;
+    background:var(--bg-elev-3); border:1px solid var(--g4); color:var(--text); padding:11px 20px;
+    border-radius:99px; font-size:12.5px; font-weight:700; transition:.25s; z-index:100; pointer-events:none;
+    white-space:nowrap; max-width:88vw; overflow:hidden; text-overflow:ellipsis; box-shadow:0 12px 26px rgba(20,25,40,.2);}
+  #toast.show{opacity:1; transform:translateX(-50%) translateY(0);}
+
+  #lockOverlay{position:fixed; inset:0; z-index:200; background:linear-gradient(160deg, var(--brand-dark), var(--brand));
+    display:none; align-items:center; justify-content:center; padding:24px;}
+  #lockOverlay.show{display:flex;}
+  .lock-card{background:var(--bg-elev); border-radius:24px; padding:28px 22px; max-width:340px; width:100%;
+    text-align:center; box-shadow:0 30px 60px -20px rgba(0,0,0,.4);}
+  .lock-mark{width:56px; height:56px; border-radius:16px; background:var(--brand-tint); color:var(--brand);
+    display:flex; align-items:center; justify-content:center; margin:0 auto 14px;}
+  .lock-mark svg{width:26px; height:26px;}
+  .lock-card h2{font-size:19px; font-weight:800; margin:0 0 6px; color:var(--text);}
+  .lock-sub{font-size:12.5px; color:var(--text-dim); line-height:1.7;}
+  .lock-status{font-size:11.5px; color:var(--text-faint); margin-top:10px; min-height:16px;}
+</style>
+</head>
+<body>
+
+<div id="lockOverlay">
+  <div class="lock-card">
+    <div class="lock-mark"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="4" y="10" width="16" height="10" rx="2"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/></svg></div>
+    <h2>MowajehPro</h2>
+
+    <div class="chip-grid" id="lockTabChips" style="justify-content:center; margin-top:14px; margin-bottom:0;">
+      <div class="vchip sel" data-tab="key">مفتاح ترخيص</div>
+      <div class="vchip" data-tab="admin">دخول كمشرف</div>
+    </div>
+
+    <div id="lockKeyTab">
+      <div class="lock-sub" style="margin-top:12px;">أدخل مفتاح الترخيص عشان تستخدم التطبيق</div>
+      <input id="lockKeyInput" class="conn-input" placeholder="XXXX-XXXX-XXXX-XXXX" style="direction:ltr; text-align:center; letter-spacing:1px; margin-top:16px;">
+      <button class="btn btn-primary" id="lockActivateBtn" style="width:100%; margin-top:10px;">تفعيل</button>
+    </div>
+
+    <div id="lockAdminTab" style="display:none;">
+      <div class="lock-sub" style="margin-top:12px;">دخول صاحب التطبيق — بدون مفتاح</div>
+      <input id="lockAdminUser" class="conn-input" placeholder="اسم المستخدم" style="direction:ltr; text-align:center; margin-top:16px;">
+      <input id="lockAdminPass" class="conn-input" type="password" placeholder="كلمة المرور" style="direction:ltr; text-align:center; margin-top:8px;">
+      <button class="btn btn-blue" id="lockAdminLoginBtn" style="width:100%; margin-top:10px;">دخول</button>
+    </div>
+
+    <div class="lock-status" id="lockStatus"></div>
+  </div>
+</div>
+
+
+<header>
+  <div style="display:flex; align-items:center; gap:10px;">
+    <svg width="42" height="42" viewBox="0 0 100 100" style="flex-shrink:0;">
+      <defs>
+        <linearGradient id="logoGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+          <stop offset="0%" stop-color="#7dd3ff"/><stop offset="100%" stop-color="#dff3ff"/>
+        </linearGradient>
+      </defs>
+      <circle cx="50" cy="50" r="48" fill="rgba(255,255,255,.14)"/>
+      <path d="M50 22 A20 20 0 0 1 68 34" stroke="#dff3ff" stroke-width="5" fill="none" stroke-linecap="round"/>
+      <path d="M50 30 A13 13 0 0 1 62 38" stroke="#dff3ff" stroke-width="5" fill="none" stroke-linecap="round" opacity=".8"/>
+      <circle cx="50" cy="45" r="3" fill="#dff3ff"/>
+      <path d="M28 66 L28 40 L50 62 L72 40 L72 66" stroke="url(#logoGrad)" stroke-width="9"
+        fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+    </svg>
+  </div>
+  <div class="status-pill"><span class="dot" id="mainDot"></span><span id="mainTxt">--</span></div>
+</header>
+
+<main>
+
+  <!-- ============ HOME: overview + speed + dns ============ -->
+  <section class="view active" id="view-home">
+
+    <div class="card acc-orange">
+      <h2><span class="icon-badge"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M4 12h4M16 12h4M10 12h4"/><circle cx="12" cy="12" r="2" fill="currentColor" stroke="none"/></svg></span>قياس السرعة</h2>
+      <div class="speed-stage">
+        <div class="dial">
+          <svg viewBox="0 0 120 120">
+            <defs><linearGradient id="speedGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+              <stop offset="0%" stop-color="#4a74ea"/><stop offset="100%" stop-color="#2454e0"/>
+            </linearGradient></defs>
+            <circle class="track" cx="60" cy="60" r="52"/>
+            <circle class="prog" id="speedRing" cx="60" cy="60" r="52" stroke-dasharray="327" stroke-dashoffset="327"/>
+          </svg>
+          <div class="dial-center"><span class="num mono" id="speedNum">0</span><span class="unit">Mbps</span><span class="lbl" id="speedLbl">جاهز</span></div>
+        </div>
+      </div>
+      <div class="speed-grid">
+        <div class="speed-box"><div class="k">التنزيل</div><div class="v mono" id="dlVal">--</div></div>
+        <div class="speed-box"><div class="k">الرفع</div><div class="v mono" id="ulVal">--</div></div>
+        <div class="speed-box"><div class="k">البينق</div><div class="v mono" id="pingVal">--</div></div>
+      </div>
+      <div style="height:12px"></div>
+      <button class="btn btn-primary" id="btnSpeed" style="width:100%">▶ اختبار سريع داخلي</button>
+      <div class="btn-row" style="margin-top:10px;">
+        <button class="btn btn-ghost" id="btnSpeedtest">Speedtest.net ↗</button>
+        <button class="btn btn-ghost" id="btnFast">Fast.com ↗</button>
+      </div>
+    </div>
+
+    <div class="card acc-teal">
+      <h2><span class="icon-badge"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><circle cx="12" cy="12" r="9"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3M4.9 4.9l2 2M17 17l2 2M4.9 19l2-2M17 7l2-2"/></svg></span>أقرب مناطق السيرفرات للألعاب</h2>
+      <button class="btn btn-primary" id="btnGamePing" style="width:100%;">▶ فحص البينق</button>
+      <div id="gamePingResults" style="margin-top:12px;"></div>
+    </div>
+
+    <div class="card acc-indigo">
+      <h2><span class="icon-badge"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3a14 14 0 0 1 0 18M12 3a14 14 0 0 0 0 18"/></svg></span>اختبار DNS</h2>
+      <div class="dns-input-row">
+        <input class="dns-input" id="dnsDomain" value="google.com" placeholder="example.com">
+        <button class="btn btn-ghost" id="btnDns">فحص</button>
+      </div>
+      <div id="dnsResults"><div class="empty"><div class="t">--</div></div></div>
+    </div>
+
+    <div class="card acc-teal">
+      <h2><span class="icon-badge"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M12 2a10 10 0 0 1 0 20M8.5 5.5a6 6 0 0 1 0 13M5 8.5a3 3 0 0 1 0 7"/><circle cx="12" cy="12" r="1" fill="currentColor" stroke="none"/></svg></span>حالة الشبكة</h2>
+      <div class="info-grid" style="grid-template-columns:1fr 1fr;">
+        <div class="info-box"><div class="k">الراوتر</div><div class="v" id="ovFiber">غير متصل</div></div>
+        <div class="info-box"><div class="k">الهوائي الخلوي</div><div class="v" id="ovAntenna">غير متصل</div></div>
+      </div>
+      <div class="info-grid" style="grid-template-columns:1fr; margin-top:8px;">
+        <div class="info-box"><div class="k">IP الخارجي لجوالك</div><div class="v mono" id="publicIp">--</div></div>
+      </div>
+    </div>
+
+  </section>
+
+  <!-- ============ ANTENNA ============ -->
+  <section class="view" id="view-antenna">
+
+    <div class="card acc-blue">
+      <h2><span class="icon-badge"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M12 2a10 10 0 0 1 0 20M8.5 5.5a6 6 0 0 1 0 13M5 8.5a3 3 0 0 1 0 7"/><circle cx="12" cy="12" r="1" fill="currentColor" stroke="none"/></svg></span>الاتصال بالهوائي / المودم</h2>
+      <div class="chip-grid" id="antVendorChips">
+        <div class="vchip" data-v="huawei">هواوي</div>
+        <div class="vchip" data-v="zte">ZTE</div>
+        <div class="vchip" data-v="tplink">TP-Link</div>
+        <div class="vchip" data-v="other">أخرى / جهاز غير متوفر</div>
+      </div>
+      <div class="field-label">عنوان IP</div>
+      <input id="antIp" class="conn-input" placeholder="مثال: 192.168.8.1">
+      <div class="field-label">كلمة المرور (لقفل الباند فقط)</div>
+      <input id="antPass" class="conn-input" type="password" placeholder="كلمة المرور">
+      <div class="btn-row" style="margin-top:6px;">
+        <button class="btn btn-ghost" id="antDisconnect">قطع الاتصال</button>
+        <button class="btn btn-blue" id="antConnect">🔌 اختبار الاتصال</button>
+      </div>
+      <div class="conn-status" id="antConnStatus">غير متصل</div>
+    </div>
+
+    <div class="card acc-blue">
+      <div class="refresh-row">
+        <div class="refresh-label"><b>تحديث الإشارة</b><span id="refreshTxt">كل 2 ث</span></div>
+        <div class="pills" id="pills"></div>
+      </div>
+    </div>
+
+    <div class="card acc-blue">
+      <div class="sig-grid" id="row4g"></div>
+      <div class="sig-grid" id="row5g"></div>
+    </div>
+
+    <div class="card acc-blue"><span class="badge g4">● 4G</span><div class="info-grid" id="info4g"></div></div>
+    <div class="card acc-blue"><span class="badge g5">● 5G</span><div class="info-grid" id="info5g"></div></div>
+
+    <div class="card acc-blue">
+      <h2><span class="icon-badge"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M8 7h8M8 12h8M8 17h5"/><circle cx="5" cy="7" r="1.4" fill="currentColor" stroke="none"/><circle cx="5" cy="12" r="1.4" fill="currentColor" stroke="none"/><circle cx="5" cy="17" r="1.4" fill="currentColor" stroke="none"/></svg></span>دمج الترددات — Carrier Aggregation</h2>
+      <div class="ca-wrap" id="caWrap"></div>
+      <div class="ca-meta"><div class="tot" id="caTotal">0 MHz</div><div class="lbl">إجمالي عرض النطاق المختار</div></div>
+    </div>
+
+    <div class="card acc-blue">
+      <h2><span class="icon-badge"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><rect x="4" y="10" width="16" height="10" rx="2"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/></svg></span>قفل الباند</h2>
+      <div id="antChips" style="display:flex; flex-wrap:wrap; gap:8px; margin-bottom:14px;"></div>
+      <div class="btn-row">
+        <button class="btn btn-ghost" id="antAuto">رجوع تلقائي</button>
+        <button class="btn btn-blue" id="antLock">🔒 تثبيت القفل</button>
+      </div>
+    </div>
+
+  </section>
+
+  <!-- ============ FIBER ============ -->
+  <section class="view" id="view-fiber">
+
+    <div class="card acc-green">
+      <h2><span class="icon-badge"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M4 12h4M16 12h4M10 12h4"/><circle cx="12" cy="12" r="2" fill="currentColor" stroke="none"/></svg></span>الاتصال بالراوتر</h2>
+      <div class="field-label">عنوان IP</div>
+      <input id="inpIp" class="conn-input" value="192.168.1.1" placeholder="192.168.1.1">
+      <div class="field-label">اسم المستخدم</div>
+      <input id="inpUser" class="conn-input" value="user" placeholder="user">
+      <div class="field-label">كلمة المرور</div>
+      <input id="inpPass" class="conn-input" type="password" placeholder="كلمة المرور">
+      <div class="btn-row" style="margin-top:6px;">
+        <button class="btn btn-ghost" id="btnDisconnect">قطع الاتصال</button>
+        <button class="btn btn-primary" id="btnConnect">🔌 اختبار الاتصال</button>
+      </div>
+      <div class="conn-status" id="connStatus">غير متصل</div>
+    </div>
+
+    <div class="card acc-green">
+      <h2><span class="icon-badge"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><circle cx="12" cy="12" r="9"/><path d="M12 8v.01M12 11v5"/></svg></span>معلومات الجهاز</h2>
+      <div class="info-grid" style="grid-template-columns:1fr 1fr;">
+        <div class="info-box"><div class="k">الموديل</div><div class="v" id="devModel">--</div></div>
+        <div class="info-box"><div class="k">المشغّل</div><div class="v" id="devIsp">--</div></div>
+        <div class="info-box"><div class="k">مدة التشغيل</div><div class="v mono" id="devUp">--</div></div>
+        <div class="info-box"><div class="k">الفيرموير</div><div class="v mono" id="devFw">--</div></div>
+      </div>
+      <div class="info-grid" style="grid-template-columns:1fr 1fr; margin-top:8px;">
+        <div class="info-box"><div class="k">DNS الأساسي</div><div class="v mono" id="devDns1">--</div></div>
+        <div class="info-box"><div class="k">DNS الثانوي</div><div class="v mono" id="devDns2">--</div></div>
+      </div>
+    </div>
+
+    <div class="card acc-green">
+      <h2><span class="icon-badge"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M5 12.5a8 8 0 0 1 14 0M8 15.5a4 4 0 0 1 8 0M12 19v.01"/></svg></span>الواي فاي</h2>
+      <div id="wifiBody"><div class="empty"><div class="t">غير متصل</div></div></div>
+    </div>
+
+    <div class="card acc-green">
+      <h2><span class="icon-badge"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M12 3l7 3v5c0 4.5-3 7.5-7 9-4-1.5-7-4.5-7-9V6l7-3z"/></svg></span>تحكم الوالدين</h2>
+      <div id="parentalBody"><div class="empty"><div class="t">غير متصل</div></div></div>
+    </div>
+
+    <div class="card acc-green">
+      <h2><span class="icon-badge"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><rect x="3" y="4" width="18" height="14" rx="2"/><path d="M8 20h8M12 18v2"/></svg></span>الأجهزة المتصلة</h2>
+      <div id="devicesBody"><div class="empty"><div class="t">لا يوجد أجهزة</div></div></div>
+    </div>
+
+    <div class="card acc-red">
+      <h2><span class="icon-badge"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M21 12a9 9 0 1 1-3-6.7M21 3v6h-6"/></svg></span>إعادة تشغيل الراوتر</h2>
+      <button class="btn btn-danger" id="btnReboot" style="width:100%">إعادة تشغيل الراوتر</button>
+    </div>
+
+  </section>
+
+  <!-- ============ CONSOLE (SSH) ============ -->
+  <section class="view" id="view-console">
+
+    <div class="card acc-slate">
+      <h2><span class="icon-badge"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M4 17l6-6-6-6M12 19h8"/></svg></span>الاتصال عبر SSH</h2>
+      <div class="field-label">المضيف (IP السويتش)</div>
+      <input id="sshHost" class="conn-input" placeholder="مثال: 192.168.1.2">
+      <div class="field-label">المنفذ</div>
+      <input id="sshPort" class="conn-input" value="22" style="direction:ltr; text-align:center;">
+      <div class="field-label">اسم المستخدم</div>
+      <input id="sshUser" class="conn-input" placeholder="admin">
+      <div class="field-label">كلمة المرور</div>
+      <input id="sshPass" class="conn-input" type="password" placeholder="كلمة المرور">
+    </div>
+
+    <div class="card acc-slate">
+      <h2><span class="icon-badge"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M8 9l3 3-3 3M13 15h3"/><rect x="3" y="4" width="18" height="16" rx="2"/></svg></span>تنفيذ أمر</h2>
+      <input id="sshCommand" class="conn-input" placeholder="مثال: show interface status" style="direction:ltr; text-align:left;">
+      <button class="btn btn-primary" id="btnSshRun" style="width:100%; margin-top:6px;">▶ تنفيذ</button>
+      <div id="sshOutput" class="mono" style="margin-top:12px; background:#0b0f16; color:#7fe89b; border-radius:12px;
+        padding:12px; font-size:11.5px; line-height:1.6; white-space:pre-wrap; word-break:break-all;
+        max-height:280px; overflow-y:auto; direction:ltr; text-align:left;">بانتظار أول أمر…</div>
+    </div>
+
+    <div class="card acc-slate">
+      <h2><span class="icon-badge"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg></span>فحص المنافذ المفتوحة</h2>
+      <div class="field-label">عنوان IP</div>
+      <input id="psHost" class="conn-input" placeholder="مثال: 192.168.1.1" style="direction:ltr; text-align:center;">
+      <div class="chip-grid" id="psModeChips" style="margin-bottom:10px;">
+        <div class="vchip sel" data-mode="quick">فحص سريع (منافذ شائعة)</div>
+        <div class="vchip" data-mode="range">نطاق مخصص</div>
+      </div>
+      <div id="psRangeBox" style="display:none; margin-bottom:10px;">
+        <div class="btn-row">
+          <input id="psStart" class="conn-input" value="1" style="direction:ltr; text-align:center; margin-bottom:0;" placeholder="من">
+          <input id="psEnd" class="conn-input" value="1024" style="direction:ltr; text-align:center; margin-bottom:0;" placeholder="إلى">
+        </div>
+        <div class="hint" style="margin-top:6px;">أقصى نطاق 300 منفذ بالفحص الواحد.</div>
+      </div>
+      <button class="btn btn-primary" id="btnPortScan" style="width:100%;">▶ ابدأ الفحص</button>
+      <div id="psResults" style="margin-top:14px;"></div>
+    </div>
+
+  </section>
+
+  <!-- ============ SETTINGS ============ -->
+  <section class="view" id="view-settings">
+
+    <div class="card acc-slate">
+      <h2><span class="icon-badge"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M12 3a9 9 0 1 0 9 9c0-.5 0-1-.1-1.5A7 7 0 0 1 12 3z"/></svg></span>المظهر</h2>
+      <div class="toggle-row">
+        <div><div class="t">الوضع الداكن</div><div class="s" style="font-size:10.5px; color:var(--text-faint);">Dark Mode</div></div>
+        <div class="tgl" id="darkModeToggle"><div class="k"></div></div>
+      </div>
+      <div class="field-label">لون التطبيق</div>
+      <div id="colorSwatches" style="display:flex; gap:10px; flex-wrap:wrap;"></div>
+    </div>
+
+    <div class="card acc-slate">
+      <h2><span class="icon-badge"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 4-6 8-6s8 2 8 6"/></svg></span>الحساب</h2>
+      <div id="acctLoggedOut">
+        <div class="field-label">الاسم</div>
+        <input id="acctName" class="conn-input" placeholder="اسمك">
+        <div class="field-label">البريد الإلكتروني</div>
+        <input id="acctEmail" class="conn-input" placeholder="you@example.com">
+        <button class="btn btn-primary" id="btnCreateAccount" style="width:100%; margin-top:4px;">إنشاء حساب</button>
+      </div>
+      <div id="acctLoggedIn" style="display:none;">
+        <div class="info-grid" style="grid-template-columns:1fr 1fr;">
+          <div class="info-box"><div class="k">الاسم</div><div class="v" id="acctNameShown">--</div></div>
+          <div class="info-box"><div class="k">البريد</div><div class="v" id="acctEmailShown" style="font-size:11px;">--</div></div>
+        </div>
+        <button class="btn btn-ghost" id="btnLogout" style="width:100%; margin-top:12px;">تسجيل الخروج</button>
+      </div>
+    </div>
+
+    <div class="card acc-slate">
+      <h2><span class="icon-badge"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M12 2l7 3v6c0 5-3 8.5-7 10-4-1.5-7-5-7-10V5z"/><path d="M9.5 12l1.8 1.8L15 10"/></svg></span>لوحة المشرف</h2>
+      <div id="adminLoginBox">
+        <div class="field-label">اسم المستخدم</div>
+        <input id="adminUser" class="conn-input" placeholder="admin" style="direction:ltr; text-align:center;">
+        <div class="field-label">كلمة المرور</div>
+        <input id="adminPass" class="conn-input" type="password" placeholder="كلمة مرور المشرف">
+        <button class="btn btn-blue" id="btnAdminLogin" style="width:100%; margin-top:4px;">دخول كمشرف</button>
+        <div class="conn-status" id="adminLoginStatus"></div>
+      </div>
+      <div id="adminPanelBox" style="display:none;">
+        <div class="field-label">توليد مفتاح ترخيص جديد</div>
+        <button class="btn btn-blue" id="btnGenerateKey" style="width:100%;">🔑 توليد مفتاح</button>
+        <div id="adminGeneratedKey" class="mono" style="margin-top:8px; font-size:15px; text-align:center;"></div>
+        <div class="field-label" style="margin-top:14px;">كلمة مرور جديدة للمشرف</div>
+        <input id="adminCurrentPass" class="conn-input" type="password" placeholder="كلمة المرور الحالية">
+        <input id="adminNewPass" class="conn-input" type="password" placeholder="كلمة المرور الجديدة">
+        <div class="btn-row" style="margin-top:6px;">
+          <button class="btn btn-ghost" id="btnAdminLogout">خروج المشرف</button>
+          <button class="btn btn-primary" id="btnAdminChangePass">تغيير كلمة المرور</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="card acc-slate">
+      <h2><span class="icon-badge"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M12 2l3 6 7 1-5 5 1 7-6-3-6 3 1-7-5-5 7-1z"/></svg></span>الترخيص</h2>
+      <div class="chip-grid" id="planChips" style="margin-bottom:12px;">
+        <div class="vchip" data-plan="free">مجاني</div>
+        <div class="vchip" data-plan="premium">بريميوم</div>
+      </div>
+      <div class="info-grid" style="grid-template-columns:1fr; margin-bottom:12px;">
+        <div class="info-box" style="text-align:right; padding:12px 14px;">
+          <div class="k">الحالة الحالية</div>
+          <div class="v" id="licenseStatus" style="font-size:15px;">نسخة مجانية</div>
+        </div>
+      </div>
+      <div id="licenseActivateBox">
+        <div class="field-label">مفتاح الترخيص</div>
+        <input id="licenseKeyInput" class="conn-input" placeholder="XXXX-XXXX-XXXX-XXXX" style="direction:ltr; text-align:center; letter-spacing:1px;">
+        <div class="btn-row" style="margin-top:6px;">
+          <button class="btn btn-ghost" id="btnRestoreLicense">استعادة ترخيص</button>
+          <button class="btn btn-primary" id="btnActivateLicense">تفعيل</button>
+        </div>
+      </div>
+      <button class="btn btn-blue" id="btnBuyLicense" style="width:100%; margin-top:10px;">شراء الترخيص الكامل</button>
+    </div>
+
+    <div class="card acc-slate">
+      <h2><span class="icon-badge"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M20.8 8.6c.5 5-4 9-8.8 12-4.8-3-9.3-7-8.8-12C3.6 5 7 3.4 12 6.5 17 3.4 20.4 5 20.8 8.6z"/></svg></span>ادعم المطوّر</h2>
+      <div class="hint" style="margin-bottom:12px;">تبرّع لدعم Abdulrahman Alharbi عبر PayPal.</div>
+      <button class="btn btn-ghost" id="btnDonate" style="width:100%;">تبرّع عبر PayPal</button>
+    </div>
+
+  </section>
+
+</main>
+
+<div id="toast"></div>
+
+<nav>
+  <button class="active" id="navHome"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 11l9-7 9 7M5 10v9h5v-6h4v6h5v-9"/></svg>الرئيسية</button>
+  <button id="navAntenna"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2a10 10 0 0 1 0 20M8.5 5.5a6 6 0 0 1 0 13M5 8.5a3 3 0 0 1 0 7"/><circle cx="12" cy="12" r="1" fill="currentColor" stroke="none"/></svg>الهوائي</button>
+  <button id="navFiber"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 12h4M16 12h4M10 12h4"/><circle cx="12" cy="12" r="2" fill="currentColor" stroke="none"/></svg>الراوتر</button>
+  <button id="navConsole"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 17l6-6-6-6M12 19h8"/></svg>Console</button>
+  <button id="navSettings"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.9l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.9-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1-1.6 1.7 1.7 0 0 0-1.9.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.9 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.6-1 1.7 1.7 0 0 0-.3-1.9l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.9.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.6 1.7 1.7 0 0 0 1.9-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.9V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"/></svg>الإعدادات</button>
+</nav>
+
+<footer><div class="credit">صنع بواسطة <b>Abdulrahman Alharbi</b></div></footer>
+
+<script>
+function toast(msg){
+  const t = document.getElementById('toast');
+  t.textContent = msg; t.classList.add('show');
+  clearTimeout(toast._t); toast._t = setTimeout(()=>t.classList.remove('show'), 2400);
+}
+function fmtMs(ms){ return ms==null ? '--' : Math.round(ms)+' ms'; }
+function ringSVG(pct, color, valueTxt){
+  const deg = Math.max(0,Math.min(100,pct))*3.6;
+  return `<div class="ring" style="background:conic-gradient(${color} ${deg}deg, var(--line) ${deg}deg)">
+    <div style="width:38px;height:38px;border-radius:50%;background:var(--bg-elev-3);display:flex;align-items:center;justify-content:center;">
+      <span class="val mono" style="color:${color}">${valueTxt}</span>
+    </div></div>`;
+}
+
+/* ===================== nav ===================== */
+const VIEWS = { navHome:'view-home', navAntenna:'view-antenna', navFiber:'view-fiber', navConsole:'view-console', navSettings:'view-settings' };
+Object.keys(VIEWS).forEach(btnId=>{
+  document.getElementById(btnId).onclick = ()=>{
+    Object.entries(VIEWS).forEach(([b,v])=>{
+      document.getElementById(v).classList.toggle('active', b===btnId);
+      document.getElementById(b).classList.toggle('active', b===btnId);
+    });
+  };
+});
+
+/* ===================== REAL speed test ===================== */
+const RING_LEN = 327;
+function setRing(pct){ document.getElementById('speedRing').style.strokeDashoffset = RING_LEN - (RING_LEN * Math.min(100,pct)/100); }
+async function measurePing(){
+  const url = 'https://speed.cloudflare.com/__down?bytes=1';
+  const samples = [];
+  for(let i=0;i<4;i++){
+    const t0 = performance.now();
+    try{ await fetch(url + '&cachebust=' + Math.random(), {cache:'no-store', mode:'cors'}); } catch(e){}
+    samples.push(performance.now()-t0);
+  }
+  samples.sort((a,b)=>a-b);
+  return samples[Math.floor(samples.length/2)];
+}
+async function measureDownload(){
+  const sizeBytes = 25_000_000;
+  const url = `https://speed.cloudflare.com/__down?bytes=${sizeBytes}&cachebust=${Math.random()}`;
+  const t0 = performance.now();
+  const res = await fetch(url, {cache:'no-store', mode:'cors'});
+  const reader = res.body.getReader();
+  let received = 0;
+  while(true){
+    const {done, value} = await reader.read();
+    if(done) break;
+    received += value.length;
+    const elapsed = (performance.now()-t0)/1000;
+    if(elapsed>0){
+      const mbps = (received*8/1_000_000)/elapsed;
+      document.getElementById('speedNum').textContent = mbps.toFixed(0);
+      document.getElementById('speedLbl').textContent = 'تنزيل...';
+      setRing(Math.min(100, mbps/2));
+    }
+  }
+  const totalElapsed = (performance.now()-t0)/1000;
+  return (received*8/1_000_000)/totalElapsed;
+}
+async function measureUpload(){
+  const sizeBytes = 6_000_000;
+  const payload = new Uint8Array(sizeBytes);
+  const t0 = performance.now();
+  await fetch('https://speed.cloudflare.com/__up', { method:'POST', body: payload, mode:'cors', cache:'no-store' });
+  const elapsed = (performance.now()-t0)/1000;
+  return (sizeBytes*8/1_000_000)/elapsed;
+}
+document.getElementById('btnSpeedtest').onclick = ()=> window.open('https://www.speedtest.net', '_blank');
+document.getElementById('btnFast').onclick = ()=> window.open('https://fast.com', '_blank');
+
+document.getElementById('btnSpeed').onclick = async ()=>{
+  const btn = document.getElementById('btnSpeed');
+  btn.disabled = true;
+  document.getElementById('dlVal').textContent='--'; document.getElementById('ulVal').textContent='--'; document.getElementById('pingVal').textContent='--';
+  setRing(0); document.getElementById('speedNum').textContent='0'; document.getElementById('speedLbl').textContent='بينق...';
+  try{
+    const ping = await measurePing();
+    document.getElementById('pingVal').textContent = fmtMs(ping);
+    document.getElementById('speedLbl').textContent = 'تنزيل...';
+    const dl = await measureDownload();
+    document.getElementById('dlVal').textContent = dl.toFixed(1)+' Mbps';
+    document.getElementById('speedNum').textContent = dl.toFixed(0);
+    document.getElementById('speedLbl').textContent = 'رفع...'; setRing(0);
+    const ul = await measureUpload();
+    document.getElementById('ulVal').textContent = ul.toFixed(1)+' Mbps';
+    document.getElementById('speedNum').textContent = ul.toFixed(0);
+    setRing(Math.min(100, ul/2));
+    document.getElementById('speedLbl').textContent = 'انتهى';
+    toast('انتهى اختبار السرعة');
+  } catch(e){
+    document.getElementById('speedLbl').textContent = 'فشل';
+    toast('تعذّر إكمال اختبار السرعة');
+  }
+  btn.disabled = false;
+};
+
+/* ===================== REAL DNS test ===================== */
+const RESOLVERS = [
+  {name:'Cloudflare', url:(d)=>`https://cloudflare-dns.com/dns-query?name=${d}&type=A`, headers:{'Accept':'application/dns-json'}},
+  {name:'Google', url:(d)=>`https://dns.google/resolve?name=${d}&type=A`, headers:{}},
+];
+document.getElementById('btnDns').onclick = async ()=>{
+  const domain = document.getElementById('dnsDomain').value.trim() || 'google.com';
+  const wrap = document.getElementById('dnsResults');
+  wrap.innerHTML = '<div class="hint">جارِ الفحص…</div>';
+  const rows = [];
+  for(const r of RESOLVERS){
+    const t0 = performance.now();
+    try{
+      const res = await fetch(r.url(domain), {headers:r.headers});
+      const j = await res.json();
+      const t = performance.now()-t0;
+      const ip = (j.Answer && j.Answer.find(a=>a.type===1))?.data || '--';
+      rows.push({name:r.name, ip, time:t});
+    } catch(e){ rows.push({name:r.name, ip:'فشل', time:null}); }
+  }
+  wrap.innerHTML = rows.map(r=>{
+    const cls = r.time==null ? 'bad' : r.time<60 ? 'good' : r.time<150 ? 'mid' : 'bad';
+    return `<div class="resolver-row"><div><div class="rname">${r.name}</div><div class="rip">${r.ip}</div></div>
+      <div class="rtime ${cls}">${fmtMs(r.time)}</div></div>`;
+  }).join('');
+};
+
+/* ===================== proxy base ===================== */
+const PROXY_BASE = 'http://localhost:5787';
+
+/* ===================== real external/public IP ===================== */
+async function loadPublicIp(){
+  const el = document.getElementById('publicIp');
+  try{
+    const res = await fetch('https://api.ipify.org?format=json');
+    const j = await res.json();
+    el.textContent = j.ip || '--';
+  } catch(e){ el.textContent = 'تعذّر الجلب'; }
+}
+loadPublicIp();
+
+/* ===================== gaming regions ping (real network measurement) ===================== */
+const GAME_REGIONS = [
+  {name:'الشرق الأوسط (البحرين)', host:'https://s3.me-south-1.amazonaws.com/'},
+  {name:'أوروبا (فرانكفورت)', host:'https://s3.eu-central-1.amazonaws.com/'},
+  {name:'آسيا (سنغافورة)', host:'https://s3.ap-southeast-1.amazonaws.com/'},
+  {name:'أمريكا (فيرجينيا)', host:'https://s3.us-east-1.amazonaws.com/'},
+];
+async function pingRegion(url){
+  const samples = [];
+  for(let i=0;i<3;i++){
+    const t0 = performance.now();
+    try{ await fetch(url + '?cachebust=' + Math.random(), {mode:'no-cors', cache:'no-store'}); }
+    catch(e){}
+    samples.push(performance.now()-t0);
+  }
+  samples.sort((a,b)=>a-b);
+  return samples[Math.floor(samples.length/2)];
+}
+document.getElementById('btnGamePing').onclick = async ()=>{
+  const btn = document.getElementById('btnGamePing');
+  const wrap = document.getElementById('gamePingResults');
+  btn.disabled = true; btn.textContent = 'جارِ الفحص…';
+  wrap.innerHTML = '<div class="hint">جارِ قياس البينق لكل منطقة…</div>';
+  const results = [];
+  for(const r of GAME_REGIONS){
+    const ms = await pingRegion(r.host);
+    results.push({name:r.name, ms});
+  }
+  results.sort((a,b)=>a.ms-b.ms);
+  wrap.innerHTML = results.map((r,i)=>{
+    const cls = r.ms<60 ? 'good' : r.ms<150 ? 'mid' : 'bad';
+    return `<div class="resolver-row"><div><div class="rname">${i===0?'⭐ ':''}${r.name}</div>${i===0?'<div class="rip">الأقرب لك</div>':''}</div>
+      <div class="rtime ${cls}">${Math.round(r.ms)} ms</div></div>`;
+  }).join('');
+  btn.disabled = false; btn.textContent = '▶ فحص البينق';
+};
+
+/* ===================== SSH console (real, via router_proxy.py + paramiko) ===================== */
+document.getElementById('btnSshRun').onclick = async ()=>{
+  const host = document.getElementById('sshHost').value.trim();
+  const port = document.getElementById('sshPort').value.trim() || '22';
+  const username = document.getElementById('sshUser').value.trim();
+  const password = document.getElementById('sshPass').value;
+  const command = document.getElementById('sshCommand').value.trim();
+  const out = document.getElementById('sshOutput');
+  if(!host || !username || !command){ toast('عبّي المضيف واسم المستخدم والأمر'); return; }
+  out.textContent = 'جارِ الاتصال وتنفيذ الأمر…';
+  try{
+    const res = await fetch(`${PROXY_BASE}/api/ssh/exec`, {
+      method:'POST', headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({host, port, username, password, command})
+    });
+    const j = await res.json();
+    if(j.ok){
+      out.textContent = (j.output || '') + (j.error_output ? '\n[stderr]\n'+j.error_output : '') || '(بدون مخرجات)';
+    } else {
+      out.textContent = 'خطأ: ' + (j.error || 'غير معروف');
+    }
+  } catch(e){ out.textContent = 'تعذّر الوصول لـ router_proxy.py'; }
+};
+
+/* ===================== port scanner (real, via router_proxy.py) ===================== */
+let psMode = 'quick';
+document.querySelectorAll('#psModeChips .vchip').forEach(c=>{
+  c.onclick = ()=>{
+    document.querySelectorAll('#psModeChips .vchip').forEach(x=>x.classList.remove('sel'));
+    c.classList.add('sel'); psMode = c.dataset.mode;
+    document.getElementById('psRangeBox').style.display = psMode === 'range' ? 'block' : 'none';
+  };
+});
+document.getElementById('btnPortScan').onclick = async ()=>{
+  const host = document.getElementById('psHost').value.trim();
+  const resBox = document.getElementById('psResults');
+  if(!host){ toast('أدخل عنوان IP'); return; }
+  const btn = document.getElementById('btnPortScan');
+  btn.disabled = true; btn.textContent = 'جارِ الفحص…';
+  resBox.innerHTML = '<div class="hint">جارِ فحص المنافذ — قد يأخذ لحظات…</div>';
+  try{
+    const body = {host, mode: psMode};
+    if(psMode === 'range'){
+      body.start = document.getElementById('psStart').value.trim();
+      body.end = document.getElementById('psEnd').value.trim();
+    }
+    const res = await fetch(`${PROXY_BASE}/api/portscan`, {method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify(body)});
+    const j = await res.json();
+    if(!j.ok){ resBox.innerHTML = `<div class="hint">فشل: ${j.error||'غير معروف'}</div>`; }
+    else if(!j.open_ports.length){ resBox.innerHTML = `<div class="hint">ما فيه منافذ مفتوحة من ${j.scanned} تم فحصها.</div>`; }
+    else{
+      resBox.innerHTML = `<div class="hint" style="margin-bottom:8px;">${j.open_ports.length} منفذ مفتوح من ${j.scanned}</div>` +
+        j.open_ports.map(p=>`<div class="resolver-row"><div><div class="rname">منفذ ${p.port}</div><div class="rip">${p.service}</div></div><div class="rtime good">مفتوح</div></div>`).join('');
+    }
+  } catch(e){ resBox.innerHTML = '<div class="hint">تعذّر الوصول لـ router_proxy.py</div>'; }
+  btn.disabled = false; btn.textContent = '▶ ابدأ الفحص';
+};
+
+/* ===================== FIBER connection ===================== */
+let live = { connected:false, ip:'', user:'', password:'' };
+function updateBrandSub(){
+  document.getElementById('ovFiber').textContent = live.connected ? ('متصل — '+live.ip) : 'غير متصل';
+  document.getElementById('ovAntenna').textContent = ant.connected ? ('متصل — '+ant.ip) : 'غير متصل';
+  const anyOn = live.connected || ant.connected;
+  document.getElementById('mainDot').className = 'dot' + (anyOn ? (live.connected?' on':' on5') : '');
+  document.getElementById('mainTxt').textContent = anyOn ? 'متصل' : 'غير متصل';
+}
+function setStatus(connected, msg){
+  live.connected = connected;
+  if(msg) document.getElementById('connStatus').textContent = msg;
+  document.getElementById('connStatus').className = 'conn-status' + (connected?' ok':'');
+  updateBrandSub();
+}
+document.getElementById('btnConnect').onclick = async ()=>{
+  live.ip = document.getElementById('inpIp').value.trim();
+  live.user = document.getElementById('inpUser').value.trim();
+  live.password = document.getElementById('inpPass').value;
+  if(!live.ip){ toast('أدخل عنوان IP'); return; }
+  document.getElementById('connStatus').textContent = 'جارِ الاتصال…';
+  try{
+    const res = await fetch(`${PROXY_BASE}/api/fiber/status?ip=${encodeURIComponent(live.ip)}&user=${encodeURIComponent(live.user)}&password=${encodeURIComponent(live.password)}`);
+    const j = await res.json();
+    if(j.ok){
+      setStatus(true, 'متصل فعلياً بالراوتر ✓');
+      toast('تم الاتصال — جارِ جلب البيانات');
+      loadWifi(); loadDevices();
+      document.getElementById('devUp').textContent = j.data.uptime || '--';
+      document.getElementById('devFw').textContent = j.data.firmware || '--';
+    } else {
+      setStatus(false, 'فشل: ' + (j.error||'تأكد من IP/كلمة المرور وتشغيل router_proxy.py'));
+      toast('تعذّر الاتصال بالراوتر');
+    }
+  } catch(e){
+    setStatus(false, 'تعذّر الوصول لـ router_proxy.py — شغّله على جهازك أولاً');
+    toast('شغّل router_proxy.py أولاً');
+  }
+};
+document.getElementById('btnDisconnect').onclick = ()=>{
+  setStatus(false, 'غير متصل');
+  document.getElementById('devUp').textContent = '--'; document.getElementById('devFw').textContent = '--';
+  document.getElementById('devDns1').textContent = '--'; document.getElementById('devDns2').textContent = '--';
+  document.getElementById('devModel').textContent = '--'; document.getElementById('devIsp').textContent = '--';
+  document.getElementById('wifiBody').innerHTML = `<div class="empty"><div class="t">غير متصل</div></div>`;
+  document.getElementById('devicesBody').innerHTML = `<div class="empty"><div class="t">لا يوجد أجهزة</div></div>`;
+  toast('تم قطع الاتصال');
+};
+async function loadWifi(){
+  const wrap = document.getElementById('wifiBody');
+  try{
+    const res = await fetch(`${PROXY_BASE}/api/fiber/wifi?ip=${encodeURIComponent(live.ip)}&user=${encodeURIComponent(live.user)}&password=${encodeURIComponent(live.password)}`);
+    const j = await res.json();
+    if(!j.ok) throw new Error(j.error||'unsupported');
+    wrap.innerHTML = `<div class="hint">${j.error||'بيانات حقيقية من الراوتر'}</div>`;
+  } catch(e){
+    wrap.innerHTML = `<div class="empty"><div class="t">غير مدعوم بعد</div></div>`;
+  }
+}
+async function loadDevices(){
+  const wrap = document.getElementById('devicesBody');
+  try{
+    const res = await fetch(`${PROXY_BASE}/api/fiber/devices?ip=${encodeURIComponent(live.ip)}&user=${encodeURIComponent(live.user)}&password=${encodeURIComponent(live.password)}`);
+    const j = await res.json();
+    if(!j.ok || !j.data || !j.data.length) throw new Error();
+    wrap.innerHTML = j.data.map(d=>`<div class="device-row"><div><div class="dn">${d.name||'جهاز'}</div><div class="dm">${d.ip||''} ${d.mac?'· '+d.mac:''}</div></div><button class="blk" data-mac="${d.mac}">حظر</button></div>`).join('');
+  } catch(e){
+    wrap.innerHTML = `<div class="empty"><div class="t">غير مدعوم بعد</div></div>`;
+  }
+}
+document.getElementById('btnReboot').onclick = async ()=>{
+  if(!live.connected){ toast('اتصل بالراوتر أولاً'); return; }
+  if(!confirm('متأكد تبي تعيد تشغيل الراوتر؟')) return;
+  try{
+    const res = await fetch(`${PROXY_BASE}/api/fiber/reboot`, { method:'POST', headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({ ip: live.ip, user: live.user, password: live.password }) });
+    const j = await res.json();
+    toast(j.ok ? 'جارِ إعادة تشغيل الراوتر…' : 'فشل: '+(j.error||'غير مدعوم بعد'));
+  } catch(e){ toast('تعذّر الوصول لـ router_proxy.py'); }
+};
+
+/* ===================== ANTENNA connection + signal ===================== */
+const BANDS_4G = ['B1','B3','B7','B8','B20','B28','B40'];
+const BANDS_5G = ['n1','n3','n28','n78'];
+let ant = { vendor:null, ip:'', password:'', connected:false, timer:null };
+let antLocked = new Set();
+let caActive = [];
+
+document.querySelectorAll('#antVendorChips .vchip').forEach(c=>{
+  c.onclick = ()=>{ document.querySelectorAll('#antVendorChips .vchip').forEach(x=>x.classList.remove('sel'));
+    c.classList.add('sel'); ant.vendor = c.dataset.v; };
+});
+
+/* refresh pills */
+let refreshSec = 2;
+function renderPills(){
+  const el = document.getElementById('pills');
+  el.innerHTML = [1,2,3,4,5].map(n=>`<div class="pill ${n===refreshSec?'active':''}" data-n="${n}">${n}</div>`).join('');
+  el.querySelectorAll('.pill').forEach(p=>{
+    p.onclick = ()=>{ refreshSec = +p.dataset.n; document.getElementById('refreshTxt').textContent = 'كل '+refreshSec+' ث';
+      renderPills(); if(ant.connected){ clearInterval(ant.timer); ant.timer = setInterval(refreshAntenna, refreshSec*1000); } };
+  });
+}
+renderPills();
+
+/* signal rows + info empty defaults */
+const EMPTY_METRICS = { color:'var(--text-faint)', sinr:'--', sinrPct:0, rsrq:'--', rsrqPct:0, rsrp:'--', rsrpPct:0 };
+function renderSigRow(containerId, gen, cls, netLabel, bars){
+  const el = document.getElementById(containerId);
+  const barsHtml = `<div class="bars">${[0,1,2,3].map(i=>`<i class="${i<bars?'on':''}"></i>`).join('')}</div>`;
+  el.innerHTML = `<div class="sig-tag ${cls}">${barsHtml}<b>${netLabel}</b></div>
+    <div class="gauge">${ringSVG(gen.sinrPct, gen.color, gen.sinr)}<span class="glabel">SINR</span></div>
+    <div class="gauge">${ringSVG(gen.rsrqPct, gen.color, gen.rsrq)}<span class="glabel">RSRQ</span></div>
+    <div class="gauge">${ringSVG(gen.rsrpPct, gen.color, gen.rsrp)}<span class="glabel">RSRP</span></div>
+    <div class="gauge">${ringSVG(0, gen.color, '--')}<span class="glabel">RSSI</span></div>`;
+}
+function renderInfo(containerId, cls, fields){
+  document.getElementById(containerId).innerHTML = fields.map(f=>`<div class="info-box ${f.hl?('hl-'+cls):''}"><div class="k">${f.k}</div><div class="v mono">${f.v}</div></div>`).join('');
+}
+const EMPTY_INFO_4G = [{k:'BAND',v:'--'},{k:'PCI',v:'--'},{k:'MODE',v:'--'},{k:'CELL ID',v:'--'},{k:'CA',v:'--'},{k:'RSSI',v:'--'}];
+const EMPTY_INFO_5G = [{k:'BAND',v:'--'},{k:'PCI',v:'--'},{k:'BW',v:'--'},{k:'CELL ID',v:'--'},{k:'EARFCN',v:'--'},{k:'RSRP',v:'--'}];
+function antEmptyDisplay(){
+  renderSigRow('row4g', EMPTY_METRICS, 'g4', '4G', 0);
+  renderSigRow('row5g', EMPTY_METRICS, 'g5', '5G', 0);
+  renderInfo('info4g','g4', EMPTY_INFO_4G);
+  renderInfo('info5g','g5', EMPTY_INFO_5G);
+}
+antEmptyDisplay();
+
+/* CA visualizer */
+function renderCA(){
+  const wrap = document.getElementById('caWrap');
+  wrap.innerHTML = `<div class="ca-center"><svg viewBox="0 0 24 24" fill="none" stroke="var(--amber)" stroke-width="2">
+    <path d="M12 2a10 10 0 0 1 0 20M8.5 5.5a6 6 0 0 1 0 13M5 8.5a3 3 0 0 1 0 7"/><circle cx="12" cy="12" r="1" fill="var(--amber)"/></svg></div>`;
+  const all = [...BANDS_4G.map(b=>({id:b,bw:20,net:'4G',color:'var(--g4)'})), ...BANDS_5G.map(b=>({id:b,bw:60,net:'5G',color:'var(--g5)'}))];
+  const cx = wrap.clientWidth/2 || 152, cy = 110, R = 84, n = all.length;
+  all.forEach((b,i)=>{
+    const angle = (i/n)*2*Math.PI - Math.PI/2;
+    const x = cx + R*Math.cos(angle), y = cy + R*Math.sin(angle);
+    const active = caActive.includes(b.id);
+    const line = document.createElement('div');
+    line.className = 'ca-line';
+    line.style.cssText = `width:${R}px; top:${cy}px; left:${cx}px; transform:rotate(${angle*180/Math.PI}deg); opacity:${active?0.6:0.08}`;
+    wrap.appendChild(line);
+    const node = document.createElement('div');
+    node.className = 'ca-node' + (active?'':' off');
+    node.style.cssText = `top:${y-18}px; left:${x-28}px; border-color:${b.color}; color:${b.color};`;
+    node.innerHTML = `${b.id}<small class="cc">${b.bw}MHz</small>`;
+    node.onclick = ()=>{
+      if(active) caActive = caActive.filter(x=>x!==b.id);
+      else{ if(caActive.length>=4){ toast('أقصى عدد 4 ترددات'); return; } caActive.push(b.id); }
+      renderCA(); updateCATotal();
+    };
+    wrap.appendChild(node);
+  });
+}
+function updateCATotal(){
+  const all = [...BANDS_4G.map(b=>({id:b,bw:20})), ...BANDS_5G.map(b=>({id:b,bw:60}))];
+  const total = caActive.reduce((s,id)=> s+(all.find(b=>b.id===id)?.bw||0),0);
+  document.getElementById('caTotal').textContent = total+' MHz';
+}
+renderCA(); updateCATotal();
+window.addEventListener('resize', renderCA);
+
+document.getElementById('antChips').innerHTML = [...BANDS_4G, ...BANDS_5G].map(b=>`<div class="chip" data-id="${b}">${b}</div>`).join('');
+document.querySelectorAll('#antChips .chip').forEach(chip=>{
+  chip.onclick = ()=>{ const id = chip.dataset.id;
+    if(antLocked.has(id)){ antLocked.delete(id); chip.classList.remove('sel'); }
+    else{ antLocked.add(id); chip.classList.add('sel'); } };
+});
+
+function setAntStatus(connected, msg){
+  ant.connected = connected;
+  document.getElementById('antConnStatus').textContent = msg;
+  document.getElementById('antConnStatus').className = 'conn-status' + (connected?' ok':' bad');
+  updateBrandSub();
+}
+document.getElementById('antConnect').onclick = async ()=>{
+  ant.ip = document.getElementById('antIp').value.trim();
+  ant.password = document.getElementById('antPass').value;
+  if(!ant.vendor){ toast('اختر نوع الجهاز أولاً'); return; }
+  if(ant.vendor==='other'){ setAntStatus(false, 'هالنوع غير مدعوم حالياً — قولي اسم الموديل بالضبط عشان أضيف له دعم'); toast('نوع الجهاز غير مدعوم بعد'); return; }
+  if(!ant.ip){ toast('أدخل عنوان IP'); return; }
+  document.getElementById('antConnStatus').textContent = 'جارِ الاتصال…';
+  try{
+    const res = await fetch(`${PROXY_BASE}/api/status?vendor=${ant.vendor}&ip=${encodeURIComponent(ant.ip)}`);
+    const j = await res.json();
+    if(j.ok){
+      setAntStatus(true, 'متصل فعلياً ✓'); toast('تم الاتصال بالهوائي');
+      clearInterval(ant.timer); ant.timer = setInterval(refreshAntenna, refreshSec*1000); refreshAntenna();
+    } else { setAntStatus(false, 'فشل: ' + (j.error||j.note||'تأكد من الـ IP')); toast('تعذّر الاتصال'); }
+  } catch(e){ setAntStatus(false, 'تعذّر الوصول لـ router_proxy.py'); toast('شغّل router_proxy.py أولاً'); }
+};
+document.getElementById('antDisconnect').onclick = ()=>{
+  clearInterval(ant.timer); setAntStatus(false, 'غير متصل'); antEmptyDisplay(); toast('تم قطع الاتصال');
+};
+async function refreshAntenna(){
+  try{
+    const res = await fetch(`${PROXY_BASE}/api/status?vendor=${ant.vendor}&ip=${encodeURIComponent(ant.ip)}`);
+    const j = await res.json();
+    if(!j.ok) throw new Error();
+    const d = j.data;
+    const m4 = { color:'var(--g4)', sinr:d.sinr??'--', sinrPct:60, rsrq:d.rsrq??'--', rsrqPct:60, rsrp:d.rsrp??'--', rsrpPct:60 };
+    const m5 = { color:'var(--g5)', sinr:d.nr_sinr??'--', sinrPct:60, rsrq:'--', rsrqPct:40, rsrp:d.nr_rsrp??'--', rsrpPct:60 };
+    renderSigRow('row4g', m4, 'g4', '4G', 4);
+    renderSigRow('row5g', m5, 'g5', '5G', d.nr_band && d.nr_band!=='--' ? 4 : 1);
+    renderInfo('info4g','g4',[{k:'BAND',v:d.band??'--',hl:true},{k:'PCI',v:d.pci??'--',hl:true},{k:'MODE',v:d.mode??'--'},{k:'CELL ID',v:d.cell_id??'--'},{k:'CA',v:d.ca??'--'},{k:'RSSI',v:d.rssi??'--'}]);
+    renderInfo('info5g','g5',[{k:'BAND',v:d.nr_band??'--',hl:true},{k:'PCI',v:d.nr_pci??'--',hl:true},{k:'BW',v:'--'},{k:'CELL ID',v:'--'},{k:'EARFCN',v:'--'},{k:'RSRP',v:d.nr_rsrp??'--'}]);
+  } catch(e){ clearInterval(ant.timer); setAntStatus(false, 'انقطع الاتصال بالهوائي'); antEmptyDisplay(); }
+}
+document.getElementById('antLock').onclick = async ()=>{
+  if(antLocked.size===0){ toast('اختر تردد واحد على الأقل'); return; }
+  if(!ant.connected){ toast('اتصل بالهوائي أولاً'); return; }
+  if(ant.vendor!=='huawei' && ant.vendor!=='zte'){ toast('قفل الباند غير مدعوم لـ '+ant.vendor+' حالياً'); return; }
+  if(!ant.password){ toast('أدخل كلمة مرور الجهاز أولاً'); return; }
+  toast('جارِ إرسال أمر القفل…');
+  try{
+    const res = await fetch(`${PROXY_BASE}/api/lock`, { method:'POST', headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({ vendor: ant.vendor, ip: ant.ip, password: ant.password, band: [...antLocked].join(',') }) });
+    const j = await res.json();
+    toast(j.ok ? 'تم تثبيت القفل فعلياً: '+[...antLocked].join(', ') : 'رفض الجهاز الأمر: '+(j.error||j.message||''));
+  } catch(e){ toast('تعذّر الوصول لـ router_proxy.py'); }
+};
+document.getElementById('antAuto').onclick = ()=>{
+  antLocked.clear(); document.querySelectorAll('#antChips .chip').forEach(c=>c.classList.remove('sel'));
+  toast('رجع الاختيار التلقائي للأبراج');
+};
+
+updateBrandSub();
+
+/* ===================== account, license, donate ===================== */
+/* ⚠️ عدّل هذين الرابطين لاحقاً لما يصير عندك حساب PayPal / صفحة شراء حقيقية */
+const BUY_LINK = 'https://paypal.me/ald7mi727';    // بدون سعر محدد — عدّله لـ 'https://paypal.me/ald7mi727/XX' لو تبي مبلغ ثابت
+const DONATE_LINK = 'https://paypal.me/ald7mi727';
+
+function storageGet(key){ try{ return localStorage.getItem(key); }catch(e){ return null; } }
+function storageSet(key,val){ try{ localStorage.setItem(key,val); }catch(e){} }
+function storageDel(key){ try{ localStorage.removeItem(key); }catch(e){} }
+
+/* --- account: local only (name/email saved on this device) --- */
+function renderAccount(){
+  const name = storageGet('acct_name'), email = storageGet('acct_email');
+  if(name && email){
+    document.getElementById('acctLoggedOut').style.display = 'none';
+    document.getElementById('acctLoggedIn').style.display = 'block';
+    document.getElementById('acctNameShown').textContent = name;
+    document.getElementById('acctEmailShown').textContent = email;
+  } else {
+    document.getElementById('acctLoggedOut').style.display = 'block';
+    document.getElementById('acctLoggedIn').style.display = 'none';
+  }
+}
+document.getElementById('btnCreateAccount').onclick = ()=>{
+  const name = document.getElementById('acctName').value.trim();
+  const email = document.getElementById('acctEmail').value.trim();
+  if(!name || !email){ toast('عبّي الاسم والبريد الإلكتروني'); return; }
+  storageSet('acct_name', name); storageSet('acct_email', email);
+  renderAccount(); toast('تم حفظ الحساب على هذا الجهاز');
+};
+document.getElementById('btnLogout').onclick = ()=>{
+  storageDel('acct_name'); storageDel('acct_email'); renderAccount(); toast('تم تسجيل الخروج');
+};
+renderAccount();
+
+/* --- local hashing (SHA-256 via the browser's native crypto — no library needed) --- */
+async function sha256(text){
+  const buf = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(text));
+  return Array.from(new Uint8Array(buf)).map(b=>b.toString(16).padStart(2,'0')).join('');
+}
+
+/* --- license key: pure local checksum, works 100% offline, no server ever --- */
+const LICENSE_SALT = 'RTRCTRL-2026';
+function keyChecksum(base12){
+  let h = 0;
+  for(const ch of (base12 + LICENSE_SALT)) h = (h*31 + ch.charCodeAt(0)) >>> 0;
+  return (h % 1679616).toString(36).toUpperCase().padStart(4,'0');
+}
+function isValidLicenseKey(raw){
+  const clean = raw.replace(/-/g,'').toUpperCase();
+  if(clean.length !== 16) return false;
+  return keyChecksum(clean.slice(0,12)) === clean.slice(12,16);
+}
+function generateLicenseKeyLocal(){
+  const alphabet = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+  let base12 = '';
+  for(let i=0;i<12;i++) base12 += alphabet[Math.floor(Math.random()*alphabet.length)];
+  const full = base12 + keyChecksum(base12);
+  return full.match(/.{1,4}/g).join('-');
+}
+
+/* --- admin: local only. Default admin/admin1415, password changeable & stored (hashed) locally --- */
+const ADMIN_DEFAULT_PASSWORD_HASH_PROMISE = sha256('admin1415');
+async function getAdminPasswordHash(){
+  return storageGet('admin_pw_hash') || await ADMIN_DEFAULT_PASSWORD_HASH_PROMISE;
+}
+async function checkAdminLogin(username, password){
+  if(username !== 'admin') return false;
+  const hash = await sha256(password);
+  return hash === await getAdminPasswordHash();
+}
+function isAdminLoggedIn(){ return storageGet('admin_session') === '1'; }
+
+function renderAdminPanel(){
+  const on = isAdminLoggedIn();
+  document.getElementById('adminLoginBox').style.display = on ? 'none' : 'block';
+  document.getElementById('adminPanelBox').style.display = on ? 'block' : 'none';
+}
+async function doAdminLogin(username, password, statusEl){
+  if(!username || !password){ if(statusEl) statusEl.textContent = 'عبّي اسم المستخدم وكلمة المرور'; return false; }
+  const ok = await checkAdminLogin(username, password);
+  if(!ok){ if(statusEl){ statusEl.textContent = 'بيانات الدخول غلط'; statusEl.className='conn-status bad'; } return false; }
+  storageSet('admin_session', '1');
+  if(statusEl){ statusEl.textContent=''; statusEl.className='conn-status'; }
+  renderAdminPanel(); renderLicense();
+  toast('دخلت كمشرف ✓');
+  return true;
+}
+document.getElementById('btnAdminLogin').onclick = async ()=>{
+  const username = document.getElementById('adminUser').value.trim();
+  const password = document.getElementById('adminPass').value;
+  const statusEl = document.getElementById('adminLoginStatus');
+  statusEl.textContent = 'جارِ التحقق…'; statusEl.className='conn-status';
+  await doAdminLogin(username, password, statusEl);
+};
+document.getElementById('btnGenerateKey').onclick = ()=>{
+  const key = generateLicenseKeyLocal();
+  document.getElementById('adminGeneratedKey').textContent = '✓ ' + key;
+  toast('تم توليد مفتاح جديد');
+};
+document.getElementById('btnAdminChangePass').onclick = async ()=>{
+  const current = document.getElementById('adminCurrentPass').value;
+  const newPass = document.getElementById('adminNewPass').value;
+  if(!(await checkAdminLogin('admin', current))){ toast('كلمة المرور الحالية غلط'); return; }
+  if(newPass.length < 4){ toast('كلمة المرور الجديدة لازم 4 أحرف فأكثر'); return; }
+  storageSet('admin_pw_hash', await sha256(newPass));
+  document.getElementById('adminCurrentPass').value=''; document.getElementById('adminNewPass').value='';
+  toast('تم تغيير كلمة مرور المشرف ✓');
+};
+document.getElementById('btnAdminLogout').onclick = ()=>{
+  storageDel('admin_session'); renderAdminPanel(); renderLicense(); toast('خرجت من لوحة المشرف');
+};
+renderAdminPanel();
+
+function isLicensedLocally(){
+  if(isAdminLoggedIn()) return true; // صاحب التطبيق مسجّل دخول كمشرف — وصول كامل بدون مفتاح
+  const key = storageGet('license_key');
+  const manualPlan = storageGet('plan_override'); // 'free' | 'premium' | null
+  return manualPlan ? (manualPlan === 'premium') : !!key;
+}
+function activateKey(raw){
+  if(!raw) return {ok:false, error:'أدخل مفتاح الترخيص'};
+  if(!isValidLicenseKey(raw)) return {ok:false, error:'المفتاح غير صحيح'};
+  storageSet('license_key', raw); storageDel('plan_override');
+  return {ok:true};
+}
+
+function renderLicense(){
+  const licensed = isLicensedLocally();
+  document.getElementById('licenseStatus').textContent = licensed ? 'الإصدار الكامل ✓' : 'نسخة مجانية';
+  document.getElementById('licenseStatus').style.color = licensed ? 'var(--ok)' : 'var(--text)';
+  document.getElementById('licenseActivateBox').style.display = licensed ? 'none' : 'block';
+  document.getElementById('btnBuyLicense').style.display = licensed ? 'none' : 'flex';
+  document.querySelectorAll('#planChips .vchip').forEach(c=>{
+    c.classList.toggle('sel', c.dataset.plan === (licensed ? 'premium' : 'free'));
+  });
+  updateGate();
+}
+document.querySelectorAll('#planChips .vchip').forEach(c=>{
+  c.onclick = ()=>{ storageSet('plan_override', c.dataset.plan); renderLicense();
+    toast(c.dataset.plan === 'premium' ? 'تم التحويل للإصدار الكامل' : 'تم التحويل للنسخة المجانية'); };
+});
+document.getElementById('btnActivateLicense').onclick = ()=>{
+  const raw = document.getElementById('licenseKeyInput').value.trim();
+  const r = activateKey(raw);
+  if(r.ok){ renderLicense(); toast('تم تفعيل الإصدار الكامل ✓'); } else { toast(r.error); }
+};
+document.getElementById('btnRestoreLicense').onclick = ()=>{
+  const raw = document.getElementById('licenseKeyInput').value.trim();
+  if(!raw){ toast('حط نفس المفتاح اللي اشتريته بالحقل وبعدين اضغط استعادة'); return; }
+  const r = activateKey(raw);
+  if(r.ok){ renderLicense(); toast('تم استرجاع الترخيص ✓'); } else { toast(r.error); }
+};
+document.getElementById('btnBuyLicense').onclick = ()=>{
+  if(BUY_LINK) window.open(BUY_LINK, '_blank');
+  else toast('رابط الشراء ما تم إعداده بعد');
+};
+document.getElementById('btnDonate').onclick = ()=>{
+  if(DONATE_LINK) window.open(DONATE_LINK, '_blank');
+  else toast('رابط PayPal ما تم إضافته بعد');
+};
+
+/* --- lock gate: blocks the whole app until licensed (or admin-logged-in) --- */
+function updateGate(){
+  const licensed = isLicensedLocally();
+  document.getElementById('lockOverlay').classList.toggle('show', !licensed);
+}
+document.getElementById('lockActivateBtn').onclick = ()=>{
+  const raw = document.getElementById('lockKeyInput').value.trim();
+  const r = activateKey(raw);
+  if(r.ok){ document.getElementById('lockStatus').textContent = ''; renderLicense(); toast('تم التفعيل ✓'); }
+  else{ document.getElementById('lockStatus').textContent = r.error; }
+};
+document.querySelectorAll('#lockTabChips .vchip').forEach(c=>{
+  c.onclick = ()=>{
+    document.querySelectorAll('#lockTabChips .vchip').forEach(x=>x.classList.remove('sel'));
+    c.classList.add('sel');
+    const isAdmin = c.dataset.tab === 'admin';
+    document.getElementById('lockKeyTab').style.display = isAdmin ? 'none' : 'block';
+    document.getElementById('lockAdminTab').style.display = isAdmin ? 'block' : 'none';
+    document.getElementById('lockStatus').textContent = '';
+  };
+});
+document.getElementById('lockAdminLoginBtn').onclick = async ()=>{
+  const username = document.getElementById('lockAdminUser').value.trim();
+  const password = document.getElementById('lockAdminPass').value;
+  const statusEl = document.getElementById('lockStatus');
+  statusEl.textContent = 'جارِ الدخول…';
+  await doAdminLogin(username, password, statusEl);
+};
+
+renderLicense();
+
+/* ===================== dark mode ===================== */
+function applyTheme(dark){
+  document.documentElement.dataset.theme = dark ? 'dark' : 'light';
+  document.getElementById('darkModeToggle').classList.toggle('on', dark);
+  storageSet('theme', dark ? 'dark' : 'light');
+}
+document.getElementById('darkModeToggle').onclick = ()=>{
+  applyTheme(document.documentElement.dataset.theme !== 'dark');
+};
+applyTheme(storageGet('theme') === 'dark');
+
+/* ===================== app color picker ===================== */
+const APP_COLORS = [
+  {id:'blue', hex:'#2454e0', dark:'#5b86ff'},
+  {id:'purple', hex:'#7c3aed', dark:'#a78bfa'},
+  {id:'teal', hex:'#0d9488', dark:'#2dd4bf'},
+  {id:'rose', hex:'#e11d48', dark:'#fb7185'},
+  {id:'amber', hex:'#c8790a', dark:'#f5b942'},
+  {id:'green', hex:'#0ea472', dark:'#34d399'},
+];
+function applyAppColor(id){
+  const c = APP_COLORS.find(x=>x.id===id) || APP_COLORS[0];
+  document.documentElement.style.setProperty('--brand', document.documentElement.dataset.theme==='dark' ? c.dark : c.hex);
+  document.documentElement.style.setProperty('--brand-dark', c.hex);
+  document.documentElement.style.setProperty('--brand-tint', c.hex + '17');
+  storageSet('app_color', id);
+  document.querySelectorAll('.swatch').forEach(s=> s.classList.toggle('sel', s.dataset.color===id));
+}
+const swWrap = document.getElementById('colorSwatches');
+swWrap.innerHTML = APP_COLORS.map(c=>`<div class="swatch" data-color="${c.id}" style="background:${c.hex}"></div>`).join('');
+swWrap.querySelectorAll('.swatch').forEach(s=> s.onclick = ()=> applyAppColor(s.dataset.color));
+applyAppColor(storageGet('app_color') || 'blue');
+
+/* re-apply brand color when dark mode toggles (dark uses a lighter shade per color) */
+document.getElementById('darkModeToggle').addEventListener('click', ()=>{
+  setTimeout(()=> applyAppColor(storageGet('app_color') || 'blue'), 0);
+});
+</script>
+</body>
+</html>
